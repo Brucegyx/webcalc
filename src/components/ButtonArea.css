@@ -1,0 +1,9 @@
+.btnArea {
+    background-color: #2a82db;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    
+    height: 100%;
+    width: 50%;
+}
