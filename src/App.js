@@ -37,10 +37,9 @@ const App = () => {
     }
   );
   const handleInput = (e)=>{
-    var value = e.target.innerHTML;
+    let value = e.target.innerHTML;
     console.log(typeof value);
-    let clear = false;
-    let result =0;
+    
     switch (value) {
       case "dl":
         setCalc({value, type: "delete"});
