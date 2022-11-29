@@ -18,12 +18,15 @@ const App = () => {
   function calcReducer(state, action) {
     switch (action.type) {
       case "delete":
+        return {input: state.input.slice(0,-1)}
+        
+      case "clear":
         return {input: ""}
-      case "concat":
-        //return {input: state["input"] + action.value}  
-
+      case "evaluate":
+        let result = evaluate(state.input);
+        return {input: state.input + action.value + result}
       default:
-        return {input : state["input"] + action.value}
+        return {input : state.input + action.value}
     }
     
 
@@ -41,15 +44,17 @@ const App = () => {
     switch (value) {
       case "dl":
         setCalc({value, type: "delete"});
+        break;
+      case "C":
+        setCalc({value, type: "clear"});
+        break;
+      case "=":
+        setCalc({value, type:"evaluate"});
+        break;
       default:
         setCalc({value, type: ""});
-    }
-    
-      
         
-      
-    
-    
+    } 
     
   }
   return (
