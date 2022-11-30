@@ -1,45 +1,40 @@
-import React, {useState, useReducer} from 'react';
+import React, {useState, useReducer, useEffect} from 'react';
 import './App.css';
 import Wrapper from './components/Wrapper';
 import Display from './components/Display';
 import ButtonArea from './components/ButtonArea';
 import Button from './components/Button';
-import 'mathjs';
 import {evaluate} from 'mathjs';
+import config from './configuration/config.json'
 
 const btnSyms = [
-  ["+", "-", "/", "*"],
-  [7, 8, 9,"dl"],
-  [4, 5, 6, "("],
-  [1,2,3,")"],
-  [0,".","C","="]
+  ['1','2','3',"+","dl"],
+  ['4', '5', '6',"-", "("],
+  ['7','8','9',"*",")"],
+  [".",'0',"C","/","="]
 ];
+const KEYMAP = config["keymap"];
 const App = () => {
+  const [calc, setCalc] = useReducer(calcReducer,{input: ""});
+  const [whichKey,pressed] = useKeyPress(KEYMAP);  
+  // reducer for the state
   function calcReducer(state, action) {
     switch (action.type) {
       case "delete":
-        return {input: state.input.slice(0,-1)}
+        return {input: state.input.slice(0,-1)};
         
       case "clear":
-        return {input: ""}
+        return {input: ""};
       case "evaluate":
         let result = evaluate(state.input);
-        return {input: state.input + action.value + result}
+        return {input: state.input + action.value + result};
       default:
-        return {input : state.input + action.value}
+        return {input : state.input + action.value};
     }
-    
-
   }
-  const [calc, setCalc] = useReducer(calcReducer,
-    {
-      input: ""
-    }
-  );
-  const handleInput = (e)=>{
-    let value = e.target.innerHTML;
-    console.log(typeof value);
-    
+
+
+  const handleInput = (value) => {
     switch (value) {
       case "dl":
         setCalc({value, type: "delete"});
@@ -52,10 +47,53 @@ const App = () => {
         break;
       default:
         setCalc({value, type: ""});
-        
     } 
-    
   }
+  const handleMouseClick = (e)=>{
+    let value = e.target.innerHTML;    
+    handleInput(value);
+  }
+  
+  /*
+    listen to keydown events, update state if mapped key is pressed
+  */
+  function useKeyPress(keymap) {
+    const [pressed, setPressed] = useState(false);
+    const [input, setInput] = useState("");
+    useEffect(() => {
+      
+      const handleKeyDown = ({key}) => {
+        if (keymap.hasOwnProperty(key)) {
+          setInput(key);
+          setPressed(true);
+          handleInput(keymap[key]);
+        }
+      }
+      const handleKeyUp = ({key}) => {
+        if (keymap.hasOwnProperty(key)) {
+          setInput("");
+          setPressed(false);
+        }
+      }
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+      return (()=> {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      })
+    }, [keymap, input, pressed]);
+    
+    return [input,pressed];
+  }
+  function createFootnote(symbol){
+
+    let ind = Object.values(KEYMAP).findIndex((val)=> val === symbol);
+    let ftnote = Object.keys(KEYMAP)[ind];
+    if (ftnote === 'Backspace') ftnote = '<';
+
+    return ftnote;
+  }
+  const footnote_arr = btnSyms.flat().map((sym) => createFootnote(sym));
   return (
     <div className="App">
       <Wrapper>
@@ -63,7 +101,12 @@ const App = () => {
           {
             btnSyms.flat().map((sym, i) => {
               return(
-                <Button key={i} className={sym} symbol={sym} handleClick={handleInput}/>);
+                <Button key={i} 
+                  footnote={footnote_arr[i]}
+                  className={sym} 
+                  symbol={sym} 
+                  handleClick={handleMouseClick}
+                />);
             })
           } 
         </ButtonArea>
@@ -72,5 +115,6 @@ const App = () => {
     </div>
   );
 }
+
 
 export default App;

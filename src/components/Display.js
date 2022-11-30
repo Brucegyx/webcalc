@@ -1,10 +1,9 @@
 import "./Display.css";
 
 const Display = ({content}) => {
-    
     return (
         <div className="display">
-            <p>{content}</p>
+            <div>{content}</div>
         </div>
     );
 };

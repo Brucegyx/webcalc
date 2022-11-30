@@ -1,10 +1,15 @@
 import "./Button.css";
 
-const Button = ({className, symbol, handleClick}) => {
+const Button = ({className, footnote, symbol, handleClick}) => {
     return (
-        <button id="button" className={className} onClick={handleClick}>
-            {symbol}
-        </button>
+        <div id="buttonWrapper">
+            <button className={className} onClick={handleClick}>
+                {symbol}
+            </button>
+            <div id="footnote">
+                {footnote}
+            </div>
+        </div>
     );
 };
 

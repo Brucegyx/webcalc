@@ -1,7 +1,10 @@
 .display {
     display: inline;
     height: 100%;
-    width:50%;
+    width:60%;
     font-size: 20px;
     font-weight: bold;
+    color:#343536;
+    font-style: italic;
+    padding: 20px;
 }
