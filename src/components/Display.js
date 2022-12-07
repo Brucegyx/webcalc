@@ -1,6 +1,7 @@
-import "./Display.css";
+/* eslint-disable indent */
+import './Display.css';
 
-const Display = ({content}) => {
+const Display = ({ content }) => {
     return (
         <div className="display">
             <div>{content}</div>

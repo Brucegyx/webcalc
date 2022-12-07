@@ -1,6 +1,6 @@
-import "./Button.css";
+import './Button.css';
 
-const Button = ({className, footnote, symbol, handleClick}) => {
+const Button = ({ className, footnote, symbol, handleClick }) => {
     return (
         <div id="buttonWrapper">
             <button className={className} onClick={handleClick}>

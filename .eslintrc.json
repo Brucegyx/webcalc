@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "semistandard",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "quotes": ["warn", "single"],
+    "indent": ["warn"],
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
+  }
+}
