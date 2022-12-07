@@ -5,7 +5,8 @@ import Wrapper from './components/Wrapper';
 import Display from './components/Display';
 import ButtonArea from './components/ButtonArea';
 import Button from './components/Button';
-import { evaluate } from 'mathjs';
+import ErrorBoundary from './components/ErrorBoundary';
+import { parse, evaluate } from 'mathjs';
 import config from './configuration/config.json';
 
 const btnSyms = [
@@ -17,6 +18,7 @@ const btnSyms = [
 
 const KEYMAP = config.keymap;
 const App = () => {
+  const [invalidIn, setInvalidIn] = useState(false);
   const [calc, setCalc] = useReducer(calcReducer, { input: '' });
   const [whichKey, pressed] = useKeyPress(KEYMAP);
   // reducer for the state
@@ -28,13 +30,19 @@ const App = () => {
       case 'clear':
         return { input: '' };
       case 'evaluate':
-        result = evaluate(state.input);
+        try {
+          result = evaluate(state.input);
+        } catch (err) {
+          setInvalidIn(true);
+          console.log(err.message);
+          setTimeout(() => setInvalidIn(false), 500);
+        }
+        // result = handleExprEval(state.input);
         return { input: state.input + action.value + result };
       default:
         return { input: state.input + action.value };
     }
   }
-
   const handleInput = (value) => {
     switch (value) {
       case 'dl':
@@ -106,7 +114,7 @@ const App = () => {
             })
           }
         </ButtonArea>
-        <Display content={calc.input}/>
+          <Display content={calc.input} invalidExpr={invalidIn}/>
       </Wrapper>
     </div>
   );

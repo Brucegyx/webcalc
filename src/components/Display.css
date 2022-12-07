@@ -8,3 +8,13 @@
     font-style: italic;
     padding: 20px;
 }
+
+.invalid {
+    animation : shake 0.5s;
+}
+
+@keyframes shake {
+    0% { transform: translate(-2px, 0px); }
+    50% { transform: translate(2px, 0px); }
+    100% { transform: translate(-2px, 0px); }
+}

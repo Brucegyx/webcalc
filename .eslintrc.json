@@ -4,9 +4,17 @@
     "plugin:react/recommended"
   ],
   "rules": {
-    "quotes": ["warn", "single"],
-    "indent": ["warn"],
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off"
+    "strict": 2,
+    "quotes": [0],
+    "indent": 1,
+    "jsx-quotes" : [2,"prefer-double"],
+    "no-unused-vars": 0,
+    "no-trailing-spaces": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/prop-types": 0,
+    "react/jsx-uses-react": 0
+  },
+  "env": {
+    "es6": true
   }
 }

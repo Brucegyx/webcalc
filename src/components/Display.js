@@ -1,10 +1,10 @@
 /* eslint-disable indent */
 import './Display.css';
 
-const Display = ({ content }) => {
+const Display = ({ content, invalidExpr }) => {
     return (
         <div className="display">
-            <div>{content}</div>
+            <div className={`${invalidExpr ? 'invalid' : 'valid'}`}>{content}</div>
         </div>
     );
 };
