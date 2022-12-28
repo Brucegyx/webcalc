@@ -1,10 +1,10 @@
-.menubar {
+.controlPanel {
   width: 40%;
   display: flex;
 
 }
 
-.panel {
+.panelBar {
   width: 5%;
   text-align: center;
   width: 20%;

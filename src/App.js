@@ -3,9 +3,7 @@ import React, { useState, useReducer, useEffect } from 'react';
 import './App.css';
 import Wrapper from './components/Wrapper';
 import Display from './components/Display';
-import ButtonArea from './components/ButtonArea';
-import Button from './components/Button';
-import MenuBar from './components/MenuBar';
+import ControlPanel from './components/ControlPanel';
 import { parse, evaluate } from 'mathjs';
 import config from './configuration/config.json';
 
@@ -112,7 +110,7 @@ const App = () => {
   return (
     <div className="App">
       <Wrapper>
-      <MenuBar 
+      <ControlPanel 
         handleInput={handleInput} 
         handlePanelSwitch={handlePanelSwitch} 
         base={activeBase} 

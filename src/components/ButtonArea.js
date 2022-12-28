@@ -10,7 +10,7 @@ const ButtonArea = ({ panelName, show, handleInput, keymap }) => {
       ['.', '0', 'C', '/', '=']
     ],
     secondary: [
-      ['sqrt', '^', 'ln(', 'e^']
+      ['sqrt', '^', 'ln(', 'e^', 'dl']
     ]
   };
   
