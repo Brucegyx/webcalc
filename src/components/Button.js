@@ -3,7 +3,7 @@ import './Button.css';
 const Button = ({ className, level, footnote, symbol, handleClick }) => {
   return (
     <div id="buttonWrapper">
-        <button className={className} id={level} onClick={handleClick}>
+        <button tabIndex="-1" className={className} id={level} onClick={handleClick}>
             {symbol}
         </button>
         <div id="footnote">

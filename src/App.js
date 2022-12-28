@@ -58,19 +58,28 @@ const App = () => {
         return { input: state.input + action.value };
     }
   }
-  const handleInput = (value) => {
-    switch (value) {
-      case 'dl':
-        setCalc({ value, type: 'delete' });
-        break;
-      case 'C':
-        setCalc({ value, type: 'clear' });
-        break;
-      case '=':
-        setCalc({ value, type: 'evaluate' });
-        break;
-      default:
-        setCalc({ value, type: '' });
+  const handleInput = (keyInput, keymap) => {
+    if (keyInput === "`") {
+      setActiveBase(!activeBase);
+      setActiveSecondary(!activeSecondary);
+    } else {
+      const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
+      if (Object.hasOwn(panelKeyMap, keyInput)) {
+        const value = panelKeyMap[keyInput];
+        switch (value) {
+          case 'dl':
+            setCalc({ value, type: 'delete' });
+            break;
+          case 'C':
+            setCalc({ value, type: 'clear' });
+            break;
+          case '=':
+            setCalc({ value, type: 'evaluate' });
+            break;
+          default:
+            setCalc({ value, type: '' });
+        }
+      }
     }
   };
   /*
@@ -79,20 +88,16 @@ const App = () => {
   function useKeyPress (keymap) {
     const [pressed, setPressed] = useState(false);
     const [input, setInput] = useState('');
-    const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
+    // const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
     useEffect(() => {
       const handleKeyDown = ({ key }) => {
-        if (Object.hasOwn(panelKeyMap, key)) {
-          setInput(key);
-          setPressed(true);
-          handleInput(panelKeyMap[key]);
-        }
+        setInput(key);
+        setPressed(true);
+        handleInput(key, keymap);
       };
       const handleKeyUp = ({ key }) => {
-        if (Object.hasOwn(panelKeyMap, key)) {
-          setInput('');
-          setPressed(false);
-        }
+        setInput('');
+        setPressed(false);
       };
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keyup', handleKeyUp);
