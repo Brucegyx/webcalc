@@ -1,4 +1,4 @@
-button {
+.fnBtn {
     color: white;
     border: 5px;
     font-size: 26px;
@@ -11,7 +11,7 @@ button {
 
 #buttonWrapper {
     text-align: center;
-    background-color: #0863bf;
+    background-color: transparent;
     position: relative;
     border: 2px  #023e7a;
     border-radius: 10px;

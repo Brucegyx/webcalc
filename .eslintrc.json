@@ -7,6 +7,7 @@
     "strict": 2,
     "quotes": [0],
     "indent": 1,
+    "quote-props": 1,
     "jsx-quotes" : [2,"prefer-double"],
     "no-unused-vars": 0,
     "no-trailing-spaces": 0,

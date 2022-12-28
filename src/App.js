@@ -5,22 +5,37 @@ import Wrapper from './components/Wrapper';
 import Display from './components/Display';
 import ButtonArea from './components/ButtonArea';
 import Button from './components/Button';
-import ErrorBoundary from './components/ErrorBoundary';
+import MenuBar from './components/MenuBar';
 import { parse, evaluate } from 'mathjs';
 import config from './configuration/config.json';
 
-const btnSyms = [
-  ['1', '2', '3', '+', 'dl'],
-  ['4', '5', '6', '-', '('],
-  ['7', '8', '9', '*', ')'],
-  ['.', '0', 'C', '/', '=']
-];
-
 const KEYMAP = config.keymap;
+
 const App = () => {
   const [invalidIn, setInvalidIn] = useState(false);
   const [calc, setCalc] = useReducer(calcReducer, { input: '' });
+  const [activeBase, setActiveBase] = useState(true);
+  const [activeSecondary, setActiveSecondary] = useState(false);
   const [whichKey, pressed] = useKeyPress(KEYMAP);
+
+  const handlePanelSwitch = (e) => {
+    const currPanelId = e.target.id;
+    console.log(currPanelId);
+    switch (currPanelId) {
+      case "base":
+        if (activeBase === false) {
+          setActiveBase(true);
+          setActiveSecondary(false);
+        }
+        break;
+      case "secondary":
+        if (activeSecondary === false) {
+          setActiveSecondary(true);
+          setActiveBase(false);
+        }
+        break;
+    }
+  };
   // reducer for the state
   function calcReducer (state, action) {
     let result = '';
@@ -58,26 +73,23 @@ const App = () => {
         setCalc({ value, type: '' });
     }
   };
-  const handleMouseClick = (e) => {
-    const value = e.target.innerHTML;
-    handleInput(value);
-  };
   /*
     listen to keydown events, update state if mapped key is pressed
   */
   function useKeyPress (keymap) {
     const [pressed, setPressed] = useState(false);
     const [input, setInput] = useState('');
+    const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
     useEffect(() => {
       const handleKeyDown = ({ key }) => {
-        if (Object.hasOwn(keymap, key)) {
+        if (Object.hasOwn(panelKeyMap, key)) {
           setInput(key);
           setPressed(true);
-          handleInput(keymap[key]);
+          handleInput(panelKeyMap[key]);
         }
       };
       const handleKeyUp = ({ key }) => {
-        if (Object.hasOwn(keymap, key)) {
+        if (Object.hasOwn(panelKeyMap, key)) {
           setInput('');
           setPressed(false);
         }
@@ -88,33 +100,21 @@ const App = () => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
       };
-    }, [keymap, input, pressed]);
+    }, [keymap, activeBase, activeSecondary, input, pressed]);
     return [input, pressed];
   }
-  function createFootnote (symbol) {
-    const ind = Object.values(KEYMAP).findIndex((val) => val === symbol);
-    let ftnote = Object.keys(KEYMAP)[ind];
-    if (ftnote === 'Backspace') ftnote = '<';
-    return ftnote;
-  }
-  const footnoteArr = btnSyms.flat().map((sym) => createFootnote(sym));
+
   return (
     <div className="App">
       <Wrapper>
-        <ButtonArea>
-          {
-            btnSyms.flat().map((sym, i) => {
-              return (
-                <Button key={i}
-                  footnote={footnoteArr[i]}
-                  className={sym}
-                  symbol={sym}
-                  handleClick={handleMouseClick}
-                />);
-            })
-          }
-        </ButtonArea>
-          <Display content={calc.input} invalidExpr={invalidIn}/>
+      <MenuBar 
+        handleInput={handleInput} 
+        handlePanelSwitch={handlePanelSwitch} 
+        base={activeBase} 
+        second={activeSecondary} 
+        mapping={KEYMAP}
+      />
+      <Display content={calc.input} invalidExpr={invalidIn}/>
       </Wrapper>
     </div>
   );

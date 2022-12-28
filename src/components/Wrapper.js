@@ -1,5 +1,6 @@
-import "./Wrapper.css"
-const Wrapper = ({children}) => {
+import "./Wrapper.css";
+
+const Wrapper = ({ children }) => {
     return (
         <div className="wrapper">
             {children}
