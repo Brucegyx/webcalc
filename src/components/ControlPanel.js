@@ -3,25 +3,35 @@ import React from 'react';
 import Button from './Button.js';
 import ButtonArea from './ButtonArea';
 
-const ControlPanel = ({ handleInput, handlePanelSwitch, base, second, mapping }) => {
+const ControlPanel = 
+({ 
+  handleClick, 
+  handlePanelSwitch, 
+  inputKey, 
+  base, 
+  second, 
+  mapping 
+}) => {
   return (
     <div className="controlPanel">
       <div className="panelBar">
-        <Button className="menuBtn base" level="base" footnote="" symbol="+/-" handleClick={handlePanelSwitch}/>
-        <Button className="menuBtn second" level="secondary" footnote="" symbol="Fn" handleClick={handlePanelSwitch}/>
+        <Button className={`base`} role={`menuBtn ${base ? 'active' : ''}`} footnote="" level="base" symbol="+/-" userIn="" handleClick={handlePanelSwitch}/>
+        <Button className={`secondary`} role ={`menuBtn ${second ? 'active' : ''}`} footnote="" level="secondary" symbol="Fn" userIn="" handleClick={handlePanelSwitch}/>
       </div>
       {base && 
       <ButtonArea 
         panelName="base" 
         show={base}
-        handleInput={handleInput}
-        keymap={mapping}
+        handleInput={handleClick}
+        pressedKey={inputKey}
+        keymap={mapping} 
       />}
       {second &&
       <ButtonArea 
         panelName="secondary"
         show={second}
-        handleInput={handleInput}
+        handleInput={handleClick}
+        pressedKey={inputKey}
         keymap={mapping}
       />}
       

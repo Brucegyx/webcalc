@@ -14,11 +14,12 @@ const App = () => {
   const [calc, setCalc] = useReducer(calcReducer, { input: '' });
   const [activeBase, setActiveBase] = useState(true);
   const [activeSecondary, setActiveSecondary] = useState(false);
-  const [whichKey, pressed] = useKeyPress(KEYMAP);
+  const whichKey = useKeyPress();
 
   const handlePanelSwitch = (e) => {
     const currPanelId = e.target.id;
-    console.log(currPanelId);
+    console.log(e.target);
+    console.log('panel' + currPanelId);
     switch (currPanelId) {
       case "base":
         if (activeBase === false) {
@@ -56,34 +57,59 @@ const App = () => {
         return { input: state.input + action.value };
     }
   }
-  const handleInput = (keyInput, keymap) => {
+  const dispatch = (value) => {
+    switch (value) {
+      case 'dl':
+        setCalc({ value, type: 'delete' });
+        break;
+      case 'C':
+        setCalc({ value, type: 'clear' });
+        break;
+      case '=':
+        setCalc({ value, type: 'evaluate' });
+        break;
+      default:
+        setCalc({ value, type: '' });
+    }
+  };
+  /* 
+  handleClickInput:
+    Param: html value clicked
+    Effect:
+      process direct operation by clicking
+  */
+  const handleClickInput = (clickValue) => {
+    dispatch(clickValue);
+  };
+
+  /*
+  handleKeyboardInput:
+    Param: keyboard input value
+    Effect:
+      look up corresponding operation by pressed key in the KEYMAP 
+  */
+  const handleKeyboardInput = (keyInput) => {
     if (keyInput === "`") {
       setActiveBase(!activeBase);
       setActiveSecondary(!activeSecondary);
     } else {
-      const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
+      const panelKeyMap = activeBase ? KEYMAP.base : KEYMAP.secondary;
       if (Object.hasOwn(panelKeyMap, keyInput)) {
         const value = panelKeyMap[keyInput];
-        switch (value) {
-          case 'dl':
-            setCalc({ value, type: 'delete' });
-            break;
-          case 'C':
-            setCalc({ value, type: 'clear' });
-            break;
-          case '=':
-            setCalc({ value, type: 'evaluate' });
-            break;
-          default:
-            setCalc({ value, type: '' });
-        }
-      }
+        dispatch(value);
+      }  
     }
   };
   /*
-    listen to keydown events, update state if mapped key is pressed
+    useKeyPress:
+      Custom hook
+      Params: A keybind map imported from config file
+      Effects:
+        Set up keyup keydown events listeners for keyboard input,
+        sync with 'base' and 'secondary' panel states and key input states
+        Will call 'handleInput()' for further processing input values.
   */
-  function useKeyPress (keymap) {
+  function useKeyPress () {
     const [pressed, setPressed] = useState(false);
     const [input, setInput] = useState('');
     // const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
@@ -91,7 +117,7 @@ const App = () => {
       const handleKeyDown = ({ key }) => {
         setInput(key);
         setPressed(true);
-        handleInput(key, keymap);
+        handleKeyboardInput(key);
       };
       const handleKeyUp = ({ key }) => {
         setInput('');
@@ -103,18 +129,20 @@ const App = () => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
       };
-    }, [keymap, activeBase, activeSecondary, input, pressed]);
-    return [input, pressed];
+    }, [activeBase, activeSecondary, input, pressed]);
+    return input;
   }
 
+  // render page
   return (
     <div className="App">
       <Wrapper>
       <ControlPanel 
-        handleInput={handleInput} 
+        handleClick={handleClickInput} 
         handlePanelSwitch={handlePanelSwitch} 
         base={activeBase} 
         second={activeSecondary} 
+        inputKey={whichKey}
         mapping={KEYMAP}
       />
       <Display content={calc.input} invalidExpr={invalidIn}/>

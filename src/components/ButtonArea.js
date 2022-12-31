@@ -1,18 +1,29 @@
 import "./ButtonArea.css";
 import Button from "./Button.js";
+import { useEffect, useState } from "react";
+const btnSyms = {
+  base: [
+    ['1', '2', '3', '+', 'dl'],
+    ['4', '5', '6', '-', '('],
+    ['7', '8', '9', '*', ')'],
+    ['.', '0', 'C', '/', '=']
+  ],
+  secondary: [
+    ['sqrt', '^', 'ln(', 'e^', 'dl']
+  ]
+};
 
-const ButtonArea = ({ panelName, show, handleInput, keymap }) => {
-  const btnSyms = {
-    base: [
-      ['1', '2', '3', '+', 'dl'],
-      ['4', '5', '6', '-', '('],
-      ['7', '8', '9', '*', ')'],
-      ['.', '0', 'C', '/', '=']
-    ],
-    secondary: [
-      ['sqrt', '^', 'ln(', 'e^', 'dl']
-    ]
-  };
+const ButtonArea = ({ panelName, show, handleInput, pressedKey, keymap }) => {
+  const [buttonName, setButtonName] = useState("");
+  useEffect(() => {
+    console.log('pressed ' + pressedKey);
+    if (pressedKey.length > 0) {
+      setButtonName(keymap[panelName][pressedKey]);
+    }
+    return () => {
+      setButtonName("");
+    };
+  }, [pressedKey]);
   
   function createFootnote (symbol) {
     let panelKeyMap = {};
@@ -28,22 +39,23 @@ const ButtonArea = ({ panelName, show, handleInput, keymap }) => {
   }  
   const handleMouseClick = (e) => {
     const value = e.target.innerHTML;
+    console.log(`${value} clicked`);
     handleInput(value);
   }; 
+  // console.log(buttonName);
+  
+  const buttonList = btnSyms[panelName].flat().map((sym, i) => 
+    <Button key={i}
+    footnote={createFootnote(sym)}
+    role="fnBtn"
+    symbol={sym}
+    userIn={buttonName}
+    handleClick={handleMouseClick}
+    />
+  );
   return (
-    
       <div className="btnArea">
-          {
-              btnSyms[panelName].flat().map((sym, i) => {
-                return (
-                  <Button key={i}
-                  footnote={createFootnote(sym)}
-                  className={`fnBtn ${sym}`}
-                  symbol={sym}
-                  handleClick={handleMouseClick}
-                  />);
-              })
-          }
+          { buttonList }
       </div>
   );
 };

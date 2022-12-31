@@ -1,22 +1,53 @@
 .fnBtn {
     color: white;
-    border: 5px;
+    font-size: 26px;
+    background-color: #0863bf;
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.fnBtn.active {
+    background-color: #023e7a;
+}
+
+.fnBtn .btn {
+    color: white;
     font-size: 26px;
     font-weight: bold;
-    background-color: #0863bf;
-    height: 80%;
-    width:80%;
-
-}
-
-#buttonWrapper {
-    text-align: center;
     background-color: transparent;
-    position: relative;
-    border: 2px  #023e7a;
-    border-radius: 10px;
+    border: none;
+    height: 100%;
+    width:100%;
 }
 
+.menuBtn {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    border-radius: 10px 0 0 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+}
+
+.menuBtn .btn{
+    color: white;
+    background-color: transparent;
+    font-size: 22px;
+    font-weight:bold;
+    font-style: italic;
+    border: none;
+    text-align: center;
+    height: 100%;
+    width:100%;
+}
+
+.menuBtn.active {
+    background-color:#0863bf;
+    box-shadow: 1ch;
+}
 #footnote {
     position: absolute;
     bottom: 0px;
@@ -25,4 +56,9 @@
     margin-bottom: 10%;
     font-size: 18px;
     color: #023e7a;
+}
+
+.btn:focus {
+    outline: none;
+    
 }
