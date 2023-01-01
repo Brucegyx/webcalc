@@ -13,6 +13,13 @@
     animation : shake 0.5s;
 }
 
+.inputHistory {
+    font-style: italic;
+    color: #82807f;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 @keyframes shake {
     0% { transform: translate(-2px, 0px); }
     50% { transform: translate(2px, 0px); }

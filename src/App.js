@@ -11,11 +11,18 @@ const KEYMAP = config.keymap;
 
 const App = () => {
   const [invalidIn, setInvalidIn] = useState(false);
+  const [history, setHistory] = useState([]);
   const [calc, setCalc] = useReducer(calcReducer, { input: '' });
+
   const [activeBase, setActiveBase] = useState(true);
   const [activeSecondary, setActiveSecondary] = useState(false);
   const whichKey = useKeyPress();
-
+  /*
+    handlePanelSwitch
+    params: Event
+    effect:
+      switch to the next panel.
+  */
   const handlePanelSwitch = (e) => {
     const currPanelId = e.target.id;
     switch (currPanelId) {
@@ -33,7 +40,18 @@ const App = () => {
         break;
     }
   };
-  // reducer for the state
+
+  /* 
+    calcReducer:
+      Reducer for handling inputs
+      params: state: component state; action: tuple (value, type)
+      effect:
+        Depending on what action.type is, perform certain actions.
+        - Delete input on Display
+        - Clear all input on Display
+        - Evaluate all inputs as an expression on Display and give results
+        - Add user input to Display
+  */
   function calcReducer (state, action) {
     let result = '';
     switch (action.type) {
@@ -43,18 +61,22 @@ const App = () => {
         return { input: '' };
       case 'evaluate':
         try {
-          result = evaluate(state.input);
+          const currentNode = parse(state.input);
+          result = currentNode.evaluate();
+          setHistory([...history, state.input + action.value + result]);
+          return { input: '' };
         } catch (err) {
           setInvalidIn(true);
           console.log(err.message);
           setTimeout(() => setInvalidIn(false), 500);
+          return { input: state.input };
         }
         // result = handleExprEval(state.input);
-        return { input: state.input + action.value + result };
       default:
         return { input: state.input + action.value };
     }
   }
+
   const dispatch = (value) => {
     switch (value) {
       case 'dl':
@@ -70,6 +92,7 @@ const App = () => {
         setCalc({ value, type: '' });
     }
   };
+
   /* 
   handleClickInput:
     Param: html value clicked
@@ -143,7 +166,7 @@ const App = () => {
         inputKey={whichKey}
         mapping={KEYMAP}
       />
-      <Display content={calc.input} invalidExpr={invalidIn}/>
+      <Display content={calc.input} invalidExpr={invalidIn} history={history}/>
       </Wrapper>
     </div>
   );

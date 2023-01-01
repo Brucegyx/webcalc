@@ -9,7 +9,7 @@ const btnSyms = {
     ['.', '0', 'C', '/', '=']
   ],
   secondary: [
-    ['sqrt', '^', 'ln(', 'e^', 'dl']
+    ['sqrt(', '^', 'log(', 'e^', 'dl']
   ]
 };
 
