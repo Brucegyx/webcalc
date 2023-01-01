@@ -18,8 +18,6 @@ const App = () => {
 
   const handlePanelSwitch = (e) => {
     const currPanelId = e.target.id;
-    console.log(e.target);
-    console.log('panel' + currPanelId);
     switch (currPanelId) {
       case "base":
         if (activeBase === false) {

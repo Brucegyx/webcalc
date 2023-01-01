@@ -16,8 +16,7 @@ const btnSyms = {
 const ButtonArea = ({ panelName, show, handleInput, pressedKey, keymap }) => {
   const [buttonName, setButtonName] = useState("");
   useEffect(() => {
-    console.log('pressed ' + pressedKey);
-    if (pressedKey.length > 0) {
+    if (pressedKey.length > 0 && pressedKey in keymap[panelName]) {
       setButtonName(keymap[panelName][pressedKey]);
     }
     return () => {
@@ -39,10 +38,8 @@ const ButtonArea = ({ panelName, show, handleInput, pressedKey, keymap }) => {
   }  
   const handleMouseClick = (e) => {
     const value = e.target.innerHTML;
-    console.log(`${value} clicked`);
     handleInput(value);
   }; 
-  // console.log(buttonName);
   
   const buttonList = btnSyms[panelName].flat().map((sym, i) => 
     <Button key={i}
