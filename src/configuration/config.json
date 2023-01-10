@@ -22,7 +22,8 @@
             "Backspace":"dl",
             "9": "(",
             "0": ")",
-            "Enter": "="
+            "Enter": "=",
+            "z": "."
 
         },
         "secondary": {

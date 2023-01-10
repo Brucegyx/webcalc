@@ -6,7 +6,7 @@ const Display = ({ content, invalidExpr, history }) => {
         <div className="display">
             <div className="inputHistory">
                 {history.map((evaluatedExpr, index) => {
-                    return <div key={index}>{evaluatedExpr}</div>;
+                    return <div className="previousInput" key={index}>{evaluatedExpr}</div>;
                 })}
             </div>
             <div className={`${invalidExpr ? 'invalid' : 'valid'}`}>

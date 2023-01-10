@@ -5,8 +5,11 @@
     font-size: 20px;
     font-weight: bold;
     color:#343536;
+    background-color: #f5f3e1;
     font-style: italic;
     padding: 20px;
+    border-radius: 10px;
+    z-index: -1;
 }
 
 .invalid {
@@ -20,6 +23,22 @@
     font-weight: bold;
 }
 
+.previousInput {
+    animation: slideUp 0.5s ease;
+
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(20px);
+    }
+    70% {
+        transform: translateY(-1px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
 @keyframes shake {
     0% { transform: translate(-2px, 0px); }
     50% { transform: translate(2px, 0px); }

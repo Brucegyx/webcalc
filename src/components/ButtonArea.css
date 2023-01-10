@@ -4,9 +4,25 @@
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 10px, 10px;
-    border-radius: 0px 10px 10px 0px;
+    border-radius: 10px;
     padding:5px;
     height: calc(100%-10px);
     max-height: 100%;
     width: 80%;
+    animation: popUp 1s ease;
+}
+
+@keyframes popUp {
+    0% { 
+        transform: scale(1, 1)
+    }
+    30% {
+        transform: scale(1.01, 1.01)
+    }
+    80% {
+        transform: scale(1.005,1);
+    }
+    100% {
+        transform: scale(1, 1);
+    }
 }
