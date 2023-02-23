@@ -1,0 +1,15 @@
+.term {
+  background: transparent;
+  display: inline-block;
+  margin: 0 1px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.term.selected {
+  background-color: orange;
+  min-width: 20px;
+  min-height: 24px;
+  padding: 2px auto;
+}

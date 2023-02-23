@@ -2,7 +2,7 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import './App.css';
 import Wrapper from './components/Wrapper';
-import Display from './components/Display';
+import { Display, moveCursorLeft, moveCursorRight } from './components/Display';
 import ControlPanel from './components/ControlPanel';
 import { parse, evaluate } from 'mathjs';
 import config from './configuration/config.json';
@@ -12,7 +12,8 @@ const KEYMAP = config.keymap;
 const App = () => {
   const [invalidIn, setInvalidIn] = useState(false);
   const [history, setHistory] = useState([]);
-  const [calc, setCalc] = useReducer(calcReducer, { input: '' });
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const [calc, setCalc] = useReducer(calcReducer, { input: [] });
 
   const [activeBase, setActiveBase] = useState(true);
   const [activeSecondary, setActiveSecondary] = useState(false);
@@ -56,15 +57,26 @@ const App = () => {
     let result = '';
     switch (action.type) {
       case 'delete':
-        return { input: state.input.slice(0, -1) };
+        try {   
+          const inputBefore = state.input.slice(0, cursorPosition);
+          const inputAfter = state.input.slice(cursorPosition + 1, state.input.length);     
+          const trimmedInput = inputBefore.concat(inputAfter);
+          setCursorPosition(cursorPosition - 1);
+          return { input: trimmedInput };
+        } catch (err) {
+          return { input: state.input };
+        }
       case 'clear':
-        return { input: '' };
+        setHistory([]);
+        setCursorPosition(0);
+        return { input: [] };
       case 'evaluate':
         try {
-          const currentNode = parse(state.input);
+          const currentNode = parse(state.input.join('')); // need to change its param from array to string
           result = currentNode.evaluate();
-          setHistory([...history, state.input + action.value + result]);
-          return { input: '' };
+          setHistory([...history, state.input.concat([action.value, result])]);
+          setCursorPosition(0);
+          return { input: [] };
         } catch (err) {
           setInvalidIn(true);
           console.log(err.message);
@@ -72,8 +84,13 @@ const App = () => {
           return { input: state.input };
         }
         // result = handleExprEval(state.input);
-      default:
-        return { input: state.input + action.value };
+      case 'insert': {
+        const inputBefore = state.input.slice(0, cursorPosition + 1);
+        const inputAfter = state.input.slice(cursorPosition + 1, state.input.length);
+        const insertedInput = inputBefore.concat([action.value], inputAfter);
+        setCursorPosition(moveCursorRight(cursorPosition, insertedInput.length));
+        return { input: insertedInput };
+      }
     }
   }
 
@@ -89,7 +106,7 @@ const App = () => {
         setCalc({ value, type: 'evaluate' });
         break;
       default:
-        setCalc({ value, type: '' });
+        setCalc({ value, type: 'insert' });
     }
   };
 
@@ -110,17 +127,27 @@ const App = () => {
       look up corresponding operation by pressed key in the KEYMAP 
   */
   const handleKeyboardInput = (keyInput) => {
-    if (keyInput === "`") {
-      setActiveBase(!activeBase);
-      setActiveSecondary(!activeSecondary);
-    } else {
-      const panelKeyMap = activeBase ? KEYMAP.base : KEYMAP.secondary;
-      if (Object.hasOwn(panelKeyMap, keyInput)) {
-        const value = panelKeyMap[keyInput];
-        dispatch(value);
-      }  
+    switch (keyInput) {
+      case "ArrowLeft":
+        setCursorPosition(moveCursorLeft(cursorPosition));    
+        break;
+      case "ArrowRight":
+        setCursorPosition(moveCursorRight(cursorPosition, calc.input.length));
+        break;
+      case "`":
+        setActiveBase(!activeBase);
+        setActiveSecondary(!activeSecondary);
+        break;
+      default: {
+        const panelKeyMap = activeBase ? KEYMAP.base : KEYMAP.secondary;
+        if (Object.hasOwn(panelKeyMap, keyInput)) {
+          const value = panelKeyMap[keyInput];
+          dispatch(value);
+        }  
+      }
     }
   };
+  
   /*
     useKeyPress:
       Custom hook
@@ -135,7 +162,9 @@ const App = () => {
     const [input, setInput] = useState('');
     // const panelKeyMap = activeBase ? keymap.base : keymap.secondary;
     useEffect(() => {
-      const handleKeyDown = ({ key }) => {
+      const handleKeyDown = (event) => {
+        event.preventDefault();
+        const key = event.key;
         setInput(key);
         setPressed(true);
         handleKeyboardInput(key);
@@ -166,7 +195,7 @@ const App = () => {
         inputKey={whichKey}
         mapping={KEYMAP}
       />
-      <Display content={calc.input} invalidExpr={invalidIn} history={history}/>
+      <Display content={calc.input} cursor={cursorPosition} invalidExpr={invalidIn} history={history}/>
       </Wrapper>
     </div>
   );

@@ -1,7 +1,22 @@
 /* eslint-disable indent */
 import './Display.css';
+import Term from './Term.js';
 
-const Display = ({ content, invalidExpr, history }) => {
+export const moveCursorLeft = (currPos) => {
+    if (currPos === 0) {
+        return 0;
+    }
+    return currPos - 1;
+};
+
+export const moveCursorRight = (currPos, lengthOfInput) => {
+    if (currPos === lengthOfInput - 1) {
+        return currPos;
+    }
+    return currPos + 1;
+};
+
+export const Display = ({ content, cursor, invalidExpr, history }) => {
     return (
         <div className="display">
             <div className="inputHistory">
@@ -10,10 +25,11 @@ const Display = ({ content, invalidExpr, history }) => {
                 })}
             </div>
             <div className={`${invalidExpr ? 'invalid' : 'valid'}`}>
-                {content}
+                {content.map((term, index) => <Term key={index} value={term} selected={index === cursor}/>)}
+            </div>
+            <div>
+
             </div>
         </div>
     );
 };
-
-export default Display;
